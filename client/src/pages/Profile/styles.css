@@ -1,46 +1,96 @@
-.profile .profile-info {
-  display: flex;
-  padding-bottom: 20px;
+.profile-page {
+  width: 100%;
 }
 
-.profile .avatar {
-  width: 220px;
-  height: 220px;
-  align-self: center;
-  margin-right: 20px;
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 16px;
+  border: 3px solid #1890ff;
 }
 
-.profile .label,
-.profile label {
-  font-size: 18px;
-  font-weight: bold;
-  margin-right: 10px;
+.profile-header {
+  margin-bottom: 24px;
 }
 
-.profile .info {
-  font-size: 18px;
+.profile-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.profile .info-container {
+.profile-username {
+  font-size: 14px;
+  color: #1890ff;
+  margin-bottom: 16px;
+}
+
+.profile-details {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
 }
 
-.profile .btn {
-  width: auto;
-  margin-right: 10px;
+.detail-row {
+  display: flex;
+  gap: 12px;
 }
 
-.profile input {
-  width: 40%;
-  display: block;
+.detail-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 500;
+  min-width: 80px;
 }
 
-.profile .input-div {
-  /* white-space: nowrap; */
+.detail-value {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.85);
 }
-.profile .form {
-  margin-bottom: 30px;
+
+.edit-form {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.edit-form h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+  }
 }

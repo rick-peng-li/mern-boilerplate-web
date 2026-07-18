@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Joi from 'joi';
+
 const { Schema } = mongoose;
 
 const messageSchema = new Schema(
@@ -7,6 +8,8 @@ const messageSchema = new Schema(
     text: {
       type: String,
       required: true,
+      minlength: 5,
+      maxlength: 5000,
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
@@ -14,20 +17,16 @@ const messageSchema = new Schema(
 );
 
 messageSchema.methods.toJSON = function () {
-  return {
-    id: this._id,
-    text: this.text,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt,
-    user: this.user.toJSON(),
-  };
+  const obj = this.toObject();
+  delete obj.__v;
+  return obj;
 };
 
 export const validateMessage = (message) => {
-  const schema = {
-    text: Joi.string().min(5).max(300).required(),
-  };
-  return Joi.validate(message, schema);
+  const schema = Joi.object({
+    text: Joi.string().min(5).max(5000).required(),
+  });
+  return schema.validate(message);
 };
 
 const Message = mongoose.model('Message', messageSchema);

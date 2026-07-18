@@ -1,44 +1,38 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
-import User from '../models/User';
+import User from '../models/User.js';
 
-const serverUrl = process.env.NODE_ENV === 'production' ? process.env.SERVER_URL_PROD : process.env.SERVER_URL_DEV;
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          let user = await User.findOne({ email: profile.emails[0].value });
 
-// google strategy
-const googleLogin = new GoogleStrategy(
-  {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${serverUrl}${process.env.GOOGLE_CALLBACK_URL}`,
-    proxy: true,
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    // console.log(profile);
-    try {
-      const oldUser = await User.findOne({ email: profile.email });
+          if (user) {
+            return done(null, user);
+          }
 
-      if (oldUser) {
-        return done(null, oldUser);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+          const newUser = new User({
+            provider: 'google',
+            name: profile.displayName,
+            username: profile.emails[0].value.split('@')[0],
+            email: profile.emails[0].value,
+            avatar: profile.photos[0].value,
+          });
 
-    try {
-      const newUser = await new User({
-        provider: 'google',
-        googleId: profile.id,
-        username: `user${profile.id}`,
-        email: profile.email,
-        name: profile.displayName,
-        avatar: profile.picture,
-      }).save();
-      done(null, newUser);
-    } catch (err) {
-      console.log(err);
-    }
-  },
-);
-
-passport.use(googleLogin);
+          await newUser.save();
+          return done(null, newUser);
+        } catch (err) {
+          return done(err, false);
+        }
+      },
+    ),
+  );
+}

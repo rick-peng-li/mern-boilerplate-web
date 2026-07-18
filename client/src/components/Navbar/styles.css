@@ -1,56 +1,93 @@
-nav {
-  background-color: darkblue;
-  padding-left: 30px;
-  padding-right: 10px;
-  height: 60px;
+.navbar {
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.navbar {
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+.navbar-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.navbar-logo:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.navbar-links {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 
-.logo {
-  display: inline-block;
-  color: white;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.nav-links {
-  list-style: none;
-  font-size: 20px;
-  display: flex;
-  margin: 5px 0;
-}
-
-.nav-item {
-  display: inline-flex;
-}
-
-.nav-item a {
-  display: inline-block;
-  padding: 10px 20px;
+.navbar-links a {
+  color: rgba(0, 0, 0, 0.65);
   text-decoration: none;
-  color: white;
-  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-.nav-item:hover {
-  background-color: white;
+.navbar-links a:hover {
+  color: #1890ff;
+  background-color: #e6f7ff;
 }
 
-.nav-item:hover a {
-  color: darkblue;
-}
-
-.flex-1 {
-  flex: 1;
-}
-.navbar .avatar {
-  width: 30px;
-  height: 30px;
-  align-self: center;
-  margin-right: 20px;
+.navbar-links .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   object-fit: cover;
+  cursor: pointer;
+}
+
+.logout-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  background-color: transparent;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: #f5222d;
+  border-color: #f5222d;
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+  
+  .navbar-links {
+    gap: 8px;
+  }
+  
+  .navbar-links a {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  
+  .navbar-logo {
+    font-size: 16px;
+  }
 }

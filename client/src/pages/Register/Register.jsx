@@ -1,17 +1,16 @@
 import React from 'react';
-import { Link, withRouter, Redirect } from 'react-router-dom';
-
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-
-import { registerUserWithEmail } from '../../store/actions/registerActions';
+import { useSelector, useDispatch } from 'react-redux';
+import { registerUserWithEmail } from '../../store/authSlice.js';
 import { registerSchema } from './validation';
 import './styles.css';
 
-const Register = ({ auth, register: { isLoading, error }, history, registerUserWithEmail }) => {
+const Register = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -21,29 +20,26 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
     },
     validationSchema: registerSchema,
     onSubmit: (values) => {
-      registerUserWithEmail(values, history);
+      dispatch(registerUserWithEmail({ formData: values, navigate }));
     },
   });
 
-  if (auth.isAuthenticated) return <Redirect to="/" />;
+  if (isAuthenticated) return <Navigate to="/" />;
 
   return (
-    <div className="register">
-      <div className="container">
-        <h1>Register page</h1>
-        <p>
-          back to{' '}
-          <Link className="bold" to="/">
-            Home page
-          </Link>
-        </p>
-        <form onSubmit={formik.handleSubmit} noValidate>
-          <h2>Create new account</h2>
-          <div>
+    <div className="register-page">
+      <div className="register-container">
+        <div className="register-header">
+          <h1 className="register-title">Create Account</h1>
+          <p className="register-subtitle">Join us today and start exploring</p>
+        </div>
+
+        <form onSubmit={formik.handleSubmit} className="register-form" noValidate>
+          <div className="form-group">
+            <label>Name</label>
             <input
-              placeholder="Name"
+              placeholder="Enter your name"
               name="name"
-              className=""
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -52,10 +48,13 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
             {formik.touched.name && formik.errors.name ? (
               <p className="error">{formik.errors.name}</p>
             ) : null}
+          </div>
+
+          <div className="form-group">
+            <label>Username</label>
             <input
-              placeholder="Username"
+              placeholder="Choose a username"
               name="username"
-              className=""
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -64,10 +63,13 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
             {formik.touched.username && formik.errors.username ? (
               <p className="error">{formik.errors.username}</p>
             ) : null}
+          </div>
+
+          <div className="form-group">
+            <label>Email address</label>
             <input
-              placeholder="Email address"
+              placeholder="Enter your email"
               name="email"
-              className=""
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -76,10 +78,13 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
             {formik.touched.email && formik.errors.email ? (
               <p className="error">{formik.errors.email}</p>
             ) : null}
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
             <input
-              placeholder="Password"
+              placeholder="Enter your password"
               name="password"
-              className=""
               type="password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -89,27 +94,29 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
               <p className="error">{formik.errors.password}</p>
             ) : null}
           </div>
+
           {error && <p className="error">{error}</p>}
-          <div>
-            <button className="btn submit" type="submit" disabled={isLoading || !formik.isValid}>
-              Sign up now
-            </button>
-          </div>
-          <div>
-            Have an account?{' '}
-            <Link className="bold" to="/login">
-              Log In
-            </Link>
+
+          <button
+            className="btn btn-primary btn-block"
+            type="submit"
+            disabled={isLoading || !formik.isValid}
+          >
+            {isLoading ? 'Creating account...' : 'Create Account'}
+          </button>
+
+          <div className="login-link">
+            Already have an account?{' '}
+            <Link to="/login">Log In</Link>
           </div>
         </form>
+
+        <Link className="back-link" to="/">
+          ← Back to Home
+        </Link>
       </div>
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  register: state.register,
-});
-
-export default compose(withRouter, connect(mapStateToProps, { registerUserWithEmail }))(Register);
+export default Register;

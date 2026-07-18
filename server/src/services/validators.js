@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from 'joi.js';
 
 export const loginSchema = Joi.object().keys({
   email: Joi.string().trim().email().required(),

@@ -1,14 +1,55 @@
-.register {
+.register-page {
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  padding: 24px;
 }
 
-.register .container {
+.register-container {
   max-width: 400px;
-  flex: 1;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  padding: 32px;
 }
 
-.register .submit {
-  background-color: gray;
-  color: white;
+.register-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.register-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.register-form {
+  width: 100%;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+}
+
+.back-link:hover {
+  color: #52c41a;
 }

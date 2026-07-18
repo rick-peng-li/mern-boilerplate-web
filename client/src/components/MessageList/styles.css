@@ -1,2 +1,11 @@
-.message-list .list {
+.message-list {
+  margin-top: 20px;
+}
+
+.message-list h3 {
+  margin-bottom: 15px;
+}
+
+.messages {
+  margin-top: 15px;
 }

@@ -1,11 +1,6 @@
-import fs from 'fs';
-import { join } from 'path';
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import { isValidUrl } from '../utils/utils';
-import { IMAGES_FOLDER_PATH } from '../utils/constants';
+import bcrypt from 'bcryptjs';
 
 const { Schema } = mongoose;
 
@@ -17,136 +12,68 @@ const userSchema = new Schema(
     },
     username: {
       type: String,
-      lowercase: true,
+      required: true,
       unique: true,
-      required: [true, "can't be blank"],
-      match: [/^[a-zA-Z0-9_]+$/, 'is invalid'],
-      index: true,
+      minlength: 3,
+      maxlength: 50,
     },
     email: {
       type: String,
-      lowercase: true,
+      required: true,
       unique: true,
-      required: [true, "can't be blank"],
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-      index: true,
     },
     password: {
       type: String,
-      trim: true,
-      minlength: 6,
-      maxlength: 60,
     },
-    name: String,
-    avatar: String,
-    role: { type: String, default: 'USER' },
-    bio: String,
-    // google
-    googleId: {
+    name: {
       type: String,
-      unique: true,
-      sparse: true,
+      required: true,
     },
-    // fb
-    facebookId: {
+    avatar: {
       type: String,
-      unique: true,
-      sparse: true,
+      default: 'default-avatar.jpg',
+    },
+    bio: {
+      type: String,
+      maxlength: 500,
+    },
+    role: {
+      type: String,
+      enum: ['USER', 'ADMIN'],
+      default: 'USER',
     },
     messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
   },
   { timestamps: true },
 );
 
-console.log(join(__dirname, '../..', IMAGES_FOLDER_PATH));
-
 userSchema.methods.toJSON = function () {
-  const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
-  const avatar = isValidUrl(this.avatar)
-    ? this.avatar
-    : fs.existsSync(absoluteAvatarFilePath)
-    ? `${IMAGES_FOLDER_PATH}${this.avatar}`
-    : `${IMAGES_FOLDER_PATH}avatar2.jpg`;
-
-  return {
-    id: this._id,
-    provider: this.provider,
-    email: this.email,
-    username: this.username,
-    avatar: avatar,
-    name: this.name,
-    role: this.role,
-    bio: this.bio,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt,
-  };
+  const obj = this.toObject();
+  delete obj.password;
+  delete obj.__v;
+  return obj;
 };
 
-const isProduction = process.env.NODE_ENV === 'production';
-const secretOrKey = isProduction ? process.env.JWT_SECRET_PROD : process.env.JWT_SECRET_DEV;
-
-userSchema.methods.generateJWT = function () {
-  const token = jwt.sign(
-    {
-      expiresIn: '12h',
-      id: this._id,
-      provider: this.provider,
-      email: this.email,
-    },
-    secretOrKey,
-  );
-  return token;
+userSchema.methods.registerUser = async function (user) {
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
 };
 
-userSchema.methods.registerUser = (newUser, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(newUser.password, salt, (errh, hash) => {
-      if (err) {
-        console.log(err);
-      }
-      // set pasword to hash
-      newUser.password = hash;
-      newUser.save(callback);
-    });
-  });
+export const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
 };
-
-userSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) return callback(err);
-    callback(null, isMatch);
-  });
-};
-
-// const delay = (t, ...vs) => new Promise(r => setTimeout(r, t, ...vs)) or util.promisify(setTimeout)
-
-export async function hashPassword(password) {
-  const saltRounds = 10;
-
-  const hashedPassword = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, function (err, hash) {
-      if (err) reject(err);
-      else resolve(hash);
-    });
-  });
-
-  return hashedPassword;
-}
 
 export const validateUser = (user) => {
-  const schema = {
-    avatar: Joi.any(),
-    name: Joi.string().min(2).max(30).required(),
-    username: Joi.string()
-      .min(2)
-      .max(20)
-      .regex(/^[a-zA-Z0-9_]+$/)
-      .required(),
-    password: Joi.string().min(6).max(20).allow('').allow(null),
+  const schema = Joi.object({
+    name: Joi.string().min(3).max(50).required(),
+    username: Joi.string().min(3).max(50).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).max(100),
     bio: Joi.string().max(500),
-  };
-
-  return Joi.validate(user, schema);
+  });
+  return schema.validate(user);
 };
 
 const User = mongoose.model('User', userSchema);
