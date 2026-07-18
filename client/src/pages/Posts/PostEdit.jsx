@@ -41,7 +41,7 @@ const PostEdit = () => {
     return <Loader />;
   }
 
-  if (!auth.isAuthenticated || (auth.me?.id !== post.user.id && auth.me?.role !== 'ADMIN')) {
+  if (!auth.isAuthenticated || !post.user || (auth.me?.id !== post.user.id && auth.me?.role !== 'ADMIN')) {
     return <p>You don't have permission to edit this post.</p>;
   }
 

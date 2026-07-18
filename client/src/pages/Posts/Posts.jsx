@@ -8,19 +8,31 @@ import Loader from '../../components/Loader/Loader.jsx';
 import './styles.css';
 
 const PostCard = ({ post, auth, onDelete, onLike }) => {
-  const canEdit = auth.isAuthenticated && (auth.me?.id === post.user.id || auth.me?.role === 'ADMIN');
+  const canEdit = auth.isAuthenticated && post.user && (auth.me?.id === post.user.id || auth.me?.role === 'ADMIN');
 
   return (
     <div className="post-card">
       <div className="post-header">
-        <Link to={`/${post.user?.username}`}>
-          <img src={post.user?.avatar || '/images/default-avatar.png'} className="avatar" />
-        </Link>
-        <div>
-          <Link to={`/${post.user?.username}`} className="name">
-            {post.user?.name}
+        {post.user ? (
+          <Link to={`/${post.user.username}`}>
+            <img src={post.user.avatar || '/images/default-avatar.png'} className="avatar" />
           </Link>
-          <span className="username">@{post.user?.username}</span>
+        ) : (
+          <div className="avatar-placeholder">
+            <span className="avatar-text">?</span>
+          </div>
+        )}
+        <div>
+          {post.user ? (
+            <>
+              <Link to={`/${post.user.username}`} className="name">
+                {post.user.name}
+              </Link>
+              <span className="username">@{post.user.username}</span>
+            </>
+          ) : (
+            <span className="name">Deleted User</span>
+          )}
           <span className="time">{moment(post.createdAt).fromNow()}</span>
         </div>
       </div>

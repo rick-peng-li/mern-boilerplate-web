@@ -77,16 +77,30 @@ const PostDetail = () => {
   return (
     <div className="post-detail">
       <div className="post-header">
-        <Link to={`/${post.user.username}`}>
-          <img src={post.user.avatar} className="avatar" />
-        </Link>
-        <div>
-          <Link to={`/${post.user.username}`} className="name">
-            {post.user.name}
-          </Link>
-          <span className="username">@{post.user.username}</span>
-          <span className="time">{moment(post.createdAt).fromNow()}</span>
-        </div>
+        {post.user ? (
+          <>
+            <Link to={`/${post.user.username}`}>
+              <img src={post.user.avatar || '/images/default-avatar.png'} className="avatar" />
+            </Link>
+            <div>
+              <Link to={`/${post.user.username}`} className="name">
+                {post.user.name}
+              </Link>
+              <span className="username">@{post.user.username}</span>
+              <span className="time">{moment(post.createdAt).fromNow()}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="avatar-placeholder">
+              <span className="avatar-text">?</span>
+            </div>
+            <div>
+              <span className="name">Deleted User</span>
+              <span className="time">{moment(post.createdAt).fromNow()}</span>
+            </div>
+          </>
+        )}
       </div>
       <h1>{post.title}</h1>
       <p className="post-content">{post.content}</p>
@@ -94,7 +108,7 @@ const PostDetail = () => {
         <button onClick={handleLike} className="btn btn-like">
           ❤️ {post.likes}
         </button>
-        {auth.isAuthenticated && (auth.me?.id === post.user.id || auth.me?.role === 'ADMIN') && (
+        {auth.isAuthenticated && post.user && (auth.me?.id === post.user.id || auth.me?.role === 'ADMIN') && (
           <>
             <Link to={`/posts/${id}/edit`} className="btn">
               Edit
