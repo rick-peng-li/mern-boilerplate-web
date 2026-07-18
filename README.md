@@ -1,5 +1,7 @@
 # MERN Boilerplate Web
 
+**项目地址**: https://github.com/rick-peng-li/mern-boilerplate-web
+
 这是一个基于 React、Redux Toolkit、Vite、Express、Mongoose 和 Passport 的全栈项目模板。帮助开发者快速搭建项目，跳过繁琐的配置，直接进入业务开发。
 
 ## 技术架构
@@ -54,10 +56,9 @@ mern-boilerplate-web/
 │   │   │   ├── Message/      # 消息组件
 │   │   │   ├── MessageForm/  # 消息表单组件
 │   │   │   ├── MessageList/  # 消息列表组件
-│   │   │   ├── Navbar/       # 导航栏组件
-│   │   │   └── Post/         # 帖子相关组件
+│   │   │   └── Navbar/       # 导航栏组件
 │   │   ├── constants/        # 常量配置
-│   │   ├── hooks/            # 自定义 Hooks
+│   │   ├── hoc/              # 高阶组件（权限控制）
 │   │   ├── layout/           # 布局组件
 │   │   ├── pages/            # 页面组件
 │   │   │   ├── Admin/        # 管理员页面
@@ -72,10 +73,14 @@ mern-boilerplate-web/
 │   │   │   └── Users/        # 用户列表页面
 │   │   ├── router/           # 路由配置
 │   │   ├── store/            # Redux 状态管理
+│   │   │   ├── actions/      # 旧版 Action（兼容）
+│   │   │   ├── reducers/     # 旧版 Reducer（兼容）
 │   │   │   ├── authSlice.js  # 认证状态
 │   │   │   ├── postsSlice.js # 帖子状态
 │   │   │   ├── commentsSlice.js # 评论状态
 │   │   │   ├── notificationsSlice.js # 通知状态
+│   │   │   ├── messageSlice.js # 消息状态
+│   │   │   ├── usersSlice.js # 用户状态
 │   │   │   └── index.js      # Store 配置
 │   │   ├── utils/            # 工具函数
 │   │   ├── App.jsx           # 主应用组件
@@ -186,9 +191,11 @@ mern-boilerplate-web/
 - 个人偏好设置
 
 ### 管理员页面 (Admin)
-- 管理员专属页面
-- 只有管理员角色可以访问
-- 展示管理员权限信息
+- 管理员专属页面，只有管理员角色可以访问
+- 系统统计数据面板（用户总数、管理员数、普通用户数、帖子总数、点赞总数、评论总数、通知总数等）
+- 快捷操作入口（管理用户、管理帖子、查看通知、系统设置）
+- 最近用户列表
+- 最近帖子列表
 
 ### 404 页面 (NotFound)
 - 处理无效路由
