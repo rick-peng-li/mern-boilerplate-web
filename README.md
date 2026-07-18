@@ -2,10 +2,6 @@
 
 这是一个基于 React、Redux Toolkit、Vite、Express、Mongoose 和 Passport 的全栈项目模板。帮助开发者快速搭建项目，跳过繁琐的配置，直接进入业务开发。
 
-## 项目地址
-
-- GitHub: https://github.com/nemanjam/mern-boilerplate
-
 ## 技术架构
 
 ### 前端技术栈
